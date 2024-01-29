@@ -1,0 +1,47 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Define el modelo de Producto
+model Product {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  price       Float
+  quantity    Int
+  createdAt   DateTime @default(now())
+
+  // Relación con la categoría
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
+}
+
+// Define el modelo de Usuario
+model User {
+  id       Int      @id @default(autoincrement())
+  username String   @unique
+  password String
+  email    String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  image       String?   // Puedes almacenar una URL de la imagen de la categoría
+  isActive    Boolean   @default(true) // Indica si la categoría está activa o no
+  createdAt   DateTime  @default(now())
+  
+  // Relación con los productos
+  products    Product[]
+
+  // Puedes agregar más campos según tus necesidades
+}
